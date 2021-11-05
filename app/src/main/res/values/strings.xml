@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Weather App</string>
+    <string name="address">Caxias do Sul, RS</string>
+    <string name="updated_at">04/11/2021 - 20:58</string>
+    <string name="status">Céu limpo</string>
+    <string name="temp">29°C</string>
+    <string name="min_temp">Min Temp: 05:05</string>
+    <string name="max_temp">Max Temp: 17:05</string>
+    <string name="sunrise">Nascer do sol</string>
+    <string name="sunrise_hour">06:40</string>
+    <string name="sunset">Pôr do sol</string>
+    <string name="sunset_hour">06:40</string>
+    <string name="wind">Vento</string>
+    <string name="wind_hour">06:40</string>
+    <string name="pressure">Pressão</string>
+    <string name="pressure_hour">06:40</string>
+    <string name="humidity">Umidade</string>
+    <string name="humidity_hour">06:40</string>
+    <string name="me">Eu</string>
+    <string name="error">Algo deu errado</string>
+    <string name="profile_pic">Imagem de perfil</string>
+</resources>
