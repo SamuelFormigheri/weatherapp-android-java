@@ -3,10 +3,8 @@ package com.example.weatherapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -22,17 +20,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private int CAMERA_PERMISSION_CODE = 1;
-    private int CAMERA_REQUEST_CODE = 1;
+    private final int CAMERA_PERMISSION_CODE = 1;
+    private final int CAMERA_REQUEST_CODE = 1;
     ImageView userImage;
 
     LocationManager locationManager;
@@ -61,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String searchTerm = getIntent().getStringExtra("searchTerm");
+        if(!searchTerm.isEmpty())
+            CITY = searchTerm;
+
+        boolean myLocation = getIntent().getBooleanExtra("myLocation", false);
+
+        mountURLToFetch();
+
         userImage = findViewById(R.id.userImage);
         userImage.setOnClickListener(this);
 
@@ -76,20 +80,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pressureTxt = findViewById(R.id.pressure);
         humidityTxt = findViewById(R.id.humidity);
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if(myLocation){
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Permissão de localização cancelada! Aceite-a nas configurações.", Toast.LENGTH_SHORT).show();
-            location = null;
-            FETCH_URL = DEFAULT_FETCH_URL;
-            return;
-        }else{
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            FETCH_URL = URL + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude() + "&units=metric&appid=" + API_KEY;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permissão de localização cancelada! Aceite-a nas configurações.", Toast.LENGTH_SHORT).show();
+                location = null;
+                FETCH_URL = DEFAULT_FETCH_URL;
+                return;
+            }else{
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                FETCH_URL = URL + "?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=" + API_KEY;
+            }
         }
 
         new weatherTask().execute();
+    }
+
+    void mountURLToFetch(){
+        DEFAULT_FETCH_URL = URL + "?q=" + CITY + "&units=metric&appid=" + API_KEY;
+        FETCH_URL = DEFAULT_FETCH_URL;
     }
 
     @Override

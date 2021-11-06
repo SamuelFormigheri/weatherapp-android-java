@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather App</string>
+    <string name="app_name">T33MPO</string>
     <string name="address">Caxias do Sul, RS</string>
     <string name="updated_at">04/11/2021 - 20:58</string>
     <string name="status">Céu limpo</string>
@@ -19,4 +19,9 @@
     <string name="me">Eu</string>
     <string name="error">Algo deu errado</string>
     <string name="profile_pic">Imagem de perfil</string>
+    <string name="my_forecast">Minha previsão</string>
+    <string name="search_forecast">Pesquisar previsão</string>
+    <string name="exit">Sair</string>
+    <string name="search">Pesquisar</string>
+    <string name="submit">Confirmar</string>
 </resources>
