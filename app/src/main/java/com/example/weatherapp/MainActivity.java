@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String API_KEY = "aa7fb71f3997f591be484bdb58831bf6";
     String DEFAULT_FETCH_URL = URL + "?q=" + CITY + "&units=metric&appid=" + API_KEY;
     String FETCH_URL = DEFAULT_FETCH_URL;
+    Bitmap userImg;
 
     TextView addressTxt,
             updated_atTxt,
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         userImage = findViewById(R.id.userImage);
         userImage.setOnClickListener(this);
+        Bitmap userImgRecorded = ((MyApplication) this.getApplication()).getUserImg();
+        if(userImgRecorded != null)
+            userImage.setImageBitmap(userImgRecorded);
 
         addressTxt = findViewById(R.id.address);
         updated_atTxt = findViewById(R.id.updated_at);
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permissão de localização cancelada! Aceite-a nas configurações.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location permission cancelled! Accept it in the settings.", Toast.LENGTH_SHORT).show();
                 location = null;
                 FETCH_URL = DEFAULT_FETCH_URL;
                 return;
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST_CODE);
             }else{
-                Toast.makeText(this, "Permissão a camera cancelada! Aceite-a nas configurações.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Camera permission cancelled! Accept it in the settings.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -131,8 +135,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(resultCode == Activity.RESULT_OK){
             if(requestCode == CAMERA_REQUEST_CODE){
                 Log.d(data.toString(), data.toString());
-                Bitmap image = (Bitmap) data.getExtras().get("data");
-                userImage.setImageBitmap(image);
+                userImg = (Bitmap) data.getExtras().get("data");
+                ((MyApplication) this.getApplication()).setUserImg(userImg);
+                userImage.setImageBitmap(userImg);
             }
         }
     }
@@ -165,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
 
                 Long updatedAt = jsonObj.getLong("dt");
-                String updatedAtText = "Atualizado em: " + new SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.ENGLISH).format(new Date(updatedAt * 1000));
+                String updatedAtText = "Updated at: " + new SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.ENGLISH).format(new Date(updatedAt * 1000));
                 String temp = main.getString("temp") + "°C";
                 String tempMin = "Min Temp: " + main.getString("temp_min") + "°C";
                 String tempMax = "Max Temp: " + main.getString("temp_max") + "°C";
